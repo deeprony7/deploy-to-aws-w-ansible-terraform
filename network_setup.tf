@@ -59,9 +59,9 @@ resource "aws_subnet" "subnet_2" {
 
 #Create subnet #1  in us-west-2
 resource "aws_subnet" "subnet_1_oregon" {
-  provider          = aws.region-worker
-  vpc_id            = aws_vpc.vpc_master_oregon.id
-  cidr_block        = "192.168.1.0/24"
+  provider   = aws.region-worker
+  vpc_id     = aws_vpc.vpc_master_oregon.id
+  cidr_block = "192.168.1.0/24"
 }
 
 

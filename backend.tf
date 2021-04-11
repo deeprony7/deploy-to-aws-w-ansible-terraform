@@ -9,6 +9,6 @@ terraform {
     region  = "us-east-1"
     profile = "demo"
     key     = "terraformstatefile"
-    bucket  = "my-bucket-hibijibi"
+    bucket  = "my-bucket-hibijibi2"
   }
 }
