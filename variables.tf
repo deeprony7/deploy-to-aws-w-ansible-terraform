@@ -35,5 +35,5 @@ variable "region-worker" {
 #How many Jenkins workers to spin up
 variable "workers-count" {
   type    = number
-  default = 1
+  default = 2
 }

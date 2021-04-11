@@ -22,6 +22,49 @@ resource "aws_vpc" "vpc_master_oregon" {
 
 }
 
+#Get all available AZ's in VPC for master region
+data "aws_availability_zones" "azs" {
+  provider = aws.region-master
+  state    = "available"
+}
+
+# Create IGW in us-east-1
+resource "aws_internet_gateway" "igw-master" {
+  provider = aws.region-master
+  vpc_id   = aws_vpc.vpc_master.id
+}
+
+# Create IGW in us-west-2
+resource "aws_internet_gateway" "igw-oregon" {
+  provider = aws.region-worker
+  vpc_id   = aws_vpc.vpc_master_oregon.id
+}
+
+#Create subnet # 1 in us-east-1
+resource "aws_subnet" "subnet_1" {
+  provider          = aws.region-master
+  availability_zone = element(data.aws_availability_zones.azs.names, 0)
+  vpc_id            = aws_vpc.vpc_master.id
+  cidr_block        = "10.0.1.0/24"
+}
+
+
+#Create subnet #2  in us-east-1
+resource "aws_subnet" "subnet_2" {
+  provider          = aws.region-master
+  vpc_id            = aws_vpc.vpc_master.id
+  availability_zone = element(data.aws_availability_zones.azs.names, 1)
+  cidr_block        = "10.0.2.0/24"
+}
+
+#Create subnet #1  in us-west-2
+resource "aws_subnet" "subnet_1_oregon" {
+  provider          = aws.region-worker
+  vpc_id            = aws_vpc.vpc_master_oregon.id
+  cidr_block        = "192.168.1.0/24"
+}
+
+
 # Initate VPC peering connection request from us-east-1
 resource "aws_vpc_peering_connection" "useast1-uswest2" {
   provider    = aws.region-master
@@ -32,18 +75,6 @@ resource "aws_vpc_peering_connection" "useast1-uswest2" {
   tags = {
     Name = "useast1-uswest2"
   }
-}
-
-# Create IGW in us-east-1
-resource "aws_internet_gateway" "igw-master" {
-  provider = aws.region-master
-  vpc_id   = aws_vpc.vpc_master.id
-}
-
-# Create IGW in us-east-1
-resource "aws_internet_gateway" "igw-oregon" {
-  provider = aws.region-worker
-  vpc_id   = aws_vpc.vpc_master_oregon.id
 }
 
 # Accept VPC peering request in us-west-2 from us-east-1
