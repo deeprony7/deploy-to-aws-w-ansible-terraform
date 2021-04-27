@@ -9,3 +9,10 @@ OR
 
 * Set up backend.tf with the bucket name and key to use to store the data
 * Set up network_setup.tf 
+
+
+### Create an HTTP API by using the AWS CLI
+
+```
+aws apigatewayv2 create-api --name my-api --protocol-type HTTP --target arn:aws:lambda:us-east-2:123456789012:function:function-name
+```
